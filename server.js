@@ -124,6 +124,7 @@ app.post('/api/waitlist', (req, res) => {
   res.status(201).json({
     success: true,
     message: "Added to waitlist successfully.",
+    waitlistId: entry.id,
     entry
   });
 });
