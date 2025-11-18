@@ -1,3 +1,5 @@
+// ===== WENDY MAGDAY CODE START =====
+
 const express = require('express');
 const cors = require('cors');
 
@@ -102,3 +104,10 @@ app.listen(PORT, () => {
   console.log('Port:', PORT);
   console.log('Orders:', orders.length);
 });
+// ===== WENDY MAGDAY CODE END =====
+
+// ===== WENDY MAGDAY CODE START (WAITLIST STORAGE) =====
+let waitlist = [];
+let waitlistIdCounter = 1;
+// ===== WENDY MAGDAY CODE END =====
+
