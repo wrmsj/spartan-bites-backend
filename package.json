@@ -1,5 +1,3 @@
-// ===== WENDY MAGDAY CODE START =====
-
 {
   "name": "spartan-bites-backend",
   "version": "1.0.0",
@@ -12,5 +10,3 @@
     "cors": "^2.8.5"
   }
 }
-
-// ===== WENDY MAGDAY CODE END =====
