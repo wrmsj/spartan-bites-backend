@@ -141,6 +141,20 @@ app.get('/api/waitlist', (req, res) => {
 });
 // ===== WENDY MAGDAY CODE END =====
 
+// ===== WENDY MAGDAY CODE START (SEAT CUSTOMER ROUTE) =====
+app.put('/api/waitlist/seat/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const entry = waitlist.find(w => w.id === id);
+
+  if (!entry) {
+    return res.status(404).json({ success: false, message: "Not found" });
+  }
+
+  entry.status = "seated";
+
+  res.json({ success: true, entry });
+});
+// ===== WENDY MAGDAY CODE END =====
 
 // Start the server (ONLY ONCE)
 app.listen(PORT, () => {
