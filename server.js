@@ -1,14 +1,17 @@
 const express = require('express');
 const cors = require('cors');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
+// Store orders in memory
 let orders = [];
 let orderIdCounter = 1000;
 
+// Create a new order
 app.post('/api/orders', (req, res) => {
   try {
     const { customerInfo, items, total } = req.body;
@@ -57,6 +60,7 @@ app.post('/api/orders', (req, res) => {
   }
 });
 
+// Get all orders
 app.get('/api/orders', (req, res) => {
   res.json({
     success: true,
@@ -65,6 +69,7 @@ app.get('/api/orders', (req, res) => {
   });
 });
 
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok',
@@ -73,12 +78,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Export CSV
 app.get('/api/export/csv', (req, res) => {
   let csv = 'Order ID,Customer Name,Email,Phone,Order Date,Total,Items,Status\n';
   
   orders.forEach(order => {
-    const itemsList = order.items.map(i => i.quantity + 'x ' + i.itemName).join('; ');
-    csv += order.orderId + ',"' + order.customerName + '","' + order.customerEmail + '","' + order.customerPhone + '","' + order.orderDate + '",' + order.orderTotal + ',"' + itemsList + '",' + order.status + '\n';
+    const itemsList = order.items
+      .map(i => `${i.quantity}x ${i.itemName}`)
+      .join('; ');
+    
+    csv += `${order.orderId},"${order.customerName}","${order.customerEmail}","${order.customerPhone}",` +
+           `"${order.orderDate}",${order.orderTotal},"${itemsList}",${order.status}\n`;
   });
 
   res.setHeader('Content-Type', 'text/csv');
@@ -86,43 +96,9 @@ app.get('/api/export/csv', (req, res) => {
   res.send(csv);
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log('Spartan Bites Backend Started');
   console.log('Port:', PORT);
   console.log('Orders:', orders.length);
 });
-```
-
-4. Click **"Commit changes"** at the bottom
-
----
-
-## 🔄 Step 3: Redeploy on Render
-
-1. Go back to Render: https://dashboard.render.com
-2. Click on **"spartan-bites-api"**
-3. Click **"Manual Deploy"** button (top right)
-4. Select **"Clear build cache & deploy"**
-5. Click **"Yes, deploy"**
-6. **Wait 2-3 minutes**
-
----
-
-## 👀 Step 4: Watch the Logs
-
-Look for these lines in the logs:
-```
-Spartan Bites Backend Started
-Port: 10000
-Orders: 0
-```
-
-And the status should change to **🟢 Live**
-
----
-
-## ✅ Step 5: Test It
-
-Once it shows **🟢 Live**, open this URL:
-```
-https://spartan-bites-api.onrender.com/api/health
