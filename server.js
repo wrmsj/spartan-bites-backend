@@ -71,15 +71,6 @@ app.get('/api/orders', (req, res) => {
   });
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok',
-    ordersStored: orders.length,
-    timestamp: new Date().toISOString() 
-  });
-});
-
 // Export CSV
 app.get('/api/export/csv', (req, res) => {
   let csv = 'Order ID,Customer Name,Email,Phone,Order Date,Total,Items,Status\n';
@@ -98,16 +89,60 @@ app.get('/api/export/csv', (req, res) => {
   res.send(csv);
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log('Spartan Bites Backend Started');
-  console.log('Port:', PORT);
-  console.log('Orders:', orders.length);
-});
 // ===== WENDY MAGDAY CODE END =====
+
 
 // ===== WENDY MAGDAY CODE START (WAITLIST STORAGE) =====
 let waitlist = [];
 let waitlistIdCounter = 1;
 // ===== WENDY MAGDAY CODE END =====
 
+
+// ===== WENDY MAGDAY CODE START (WAITLIST POST ROUTE) =====
+app.post('/api/waitlist', (req, res) => {
+  const { name, phone, size, notes } = req.body;
+
+  if (!name || !phone || !size) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required waitlist information."
+    });
+  }
+
+  const entry = {
+    id: waitlistIdCounter++,
+    name,
+    phone,
+    size,
+    notes: notes || "",
+    timeJoined: new Date().toISOString(),
+    status: "waiting"
+  };
+
+  waitlist.push(entry);
+
+  res.status(201).json({
+    success: true,
+    message: "Added to waitlist successfully.",
+    entry
+  });
+});
+// ===== WENDY MAGDAY CODE END =====
+
+
+// ===== WENDY MAGDAY CODE START (WAITLIST GET ROUTE) =====
+app.get('/api/waitlist', (req, res) => {
+  res.json({
+    success: true,
+    total: waitlist.length,
+    waitlist
+  });
+});
+// ===== WENDY MAGDAY CODE END =====
+
+
+// Start the server (ONLY ONCE)
+app.listen(PORT, () => {
+  console.log('Spartan Bites Backend Started');
+  console.log('Port:', PORT);
+});
